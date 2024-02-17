@@ -6,7 +6,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import Papa from "papaparse";
+import Papa, {ParseResult} from "papaparse";
 import { enqueueSnackbar } from "notistack";
 import * as XLSX from "xlsx";
 
@@ -70,6 +70,7 @@ export default function CsvUpload({
   const processCsv = () => {
     const reader = new FileReader();
     reader.onload = (e) => {
+      if (!e.target) return;
       const csvText = e.target.result;
 
       if (typeof csvText !== "string") return;
@@ -87,6 +88,7 @@ export default function CsvUpload({
   const processXls = () => {
     const reader = new FileReader();
     reader.onload = (e) => {
+      if (!e.target || !e.target.result) return;
       if (typeof e.target.result === "string") return;
 
       const data = new Uint8Array(e.target.result);
@@ -118,7 +120,7 @@ export default function CsvUpload({
       .join("\n");
   };
 
-  const parseCsv = (file) => {
+  const parseCsv = (file: string) => {
     const cleanedCsv = cleanCsv(
       csvCleanupParamsMap[selectedType].removeFirstNLines,
       csvCleanupParamsMap[selectedType].removeLastNLines,
@@ -126,7 +128,7 @@ export default function CsvUpload({
     ).replaceAll(`\t`, "");
 
     return Papa.parse(cleanedCsv, {
-      complete: (result) => {
+      complete: (result: ParseResult<ParsedCsvRow>) => {
         const processedData = csvCleanupParamsMap[
           selectedType
         ].transformFunction(result.data);

@@ -6,8 +6,12 @@ import {
   TableRow,
 } from "@mui/material";
 import { previewMaxRowIndex } from "@/app/constants";
+import { ParsedCsvRow } from "@/components/CsvUpload/types";
 
-export default function PreviewTable({ parsedData }) {
+type PreviewTableProps = {
+  parsedData: ParsedCsvRow[];
+};
+export default function PreviewTable({ parsedData }: PreviewTableProps) {
   return (
     <Table className="bg-white">
       <TableHead>
