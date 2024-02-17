@@ -204,7 +204,9 @@ export default function CsvUpload({
               <em>None</em>
             </MenuItem>
             {dropdownMenu.map((item) => (
-              <MenuItem value={item.value}>{item.label}</MenuItem>
+              <MenuItem value={item.value} key={item.value}>
+                {item.label}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
