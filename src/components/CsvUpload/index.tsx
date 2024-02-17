@@ -54,7 +54,7 @@ export default function CsvUpload({
     }
   };
   function handleUploadOnChange(e: ChangeEvent<HTMLInputElement>) {
-    if (!e.target?.files[0]) return;
+    if (!e.target.files || !e.target?.files[0]) return;
 
     const file = e.target?.files[0];
     setSelectedFile(file);
