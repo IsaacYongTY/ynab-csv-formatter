@@ -56,10 +56,24 @@ export const deriveUobAccountFormat = (
   });
 };
 
+export const deriveDbsAccountFormat = (
+  parsedCsv: ParsedCsvRow[],
+): ProcessedCsvRow[] => {
+  return parsedCsv.map((row, index) => {
+    return {
+      date: row["Transaction Date"],
+      payee: row["Reference"],
+      memo: row["Transaction Ref1"] + "\n" + row["Transaction Ref2"],
+      outflow: row["Debit Amount"],
+      inflow: row["Credit Amount"],
+    };
+  });
+};
+
 export const renameFilenameExtensionToCsv = (filename: string): string => {
-  const delimiter = '.'
-  if(!filename.includes(delimiter)) {
-    return ''
+  const delimiter = ".";
+  if (!filename.includes(delimiter)) {
+    return "";
   }
 
   return `${filename.split(delimiter)[0]}.csv`;

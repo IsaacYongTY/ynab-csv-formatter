@@ -4,10 +4,9 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Select,
+  Select, SelectChangeEvent,
 } from "@mui/material";
 import Papa, {ParseResult} from "papaparse";
-import { enqueueSnackbar } from "notistack";
 import * as XLSX from "xlsx";
 
 import classnames from "classnames/bind";
@@ -31,13 +30,13 @@ export default function CsvUpload({
   setParsedData,
   parsedData,
 }: CsvUploadProps) {
+  // type any to bypass MUI material select value type error
   const [selectedType, setSelectedType] = useState<any>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const fileUploadInput = useRef<HTMLInputElement | null>(null);
 
   const detectBankAndTypeByFileName = (filename: string) => {
-    console.log(filename);
     if (filename.includes("CardTransactions")) {
       setSelectedType("standardCharteredCreditCard");
       return;
@@ -52,6 +51,11 @@ export default function CsvUpload({
       setSelectedType("uobCreditCard");
       return;
     }
+
+    if (filename.includes(".P0000")) {
+      setSelectedType("dbsAccount");
+      return;
+    }
   };
   function handleUploadOnChange(e: ChangeEvent<HTMLInputElement>) {
     if (!e.target.files || !e.target?.files[0]) return;
@@ -62,9 +66,9 @@ export default function CsvUpload({
     detectBankAndTypeByFileName(file.name);
   }
 
-  const handleSelectChange = (value: string) => {
+  const handleSelectChange = (e: SelectChangeEvent) => {
     setParsedData([]);
-    setSelectedType(value);
+    setSelectedType(e.target.value);
   };
 
   const processCsv = () => {
@@ -142,7 +146,6 @@ export default function CsvUpload({
   };
 
   const handleProcessFile = () => {
-    console.log(selectedFile);
     if (selectedFile?.type === "text/csv") {
       return processCsv();
     }
@@ -161,7 +164,7 @@ export default function CsvUpload({
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = selectedFile?.name
-      ? `formatted_${renameFilenameExtensionToCsv(selectedFile?.name)}`
+      ? `formatted_${selectedType}_${renameFilenameExtensionToCsv(selectedFile?.name)}`
       : "parsedCsv.csv";
     link.style.visibility = "hidden";
 
@@ -200,7 +203,7 @@ export default function CsvUpload({
             id="demo-simple-select-filled"
             value={selectedType}
             label="Bank & Type"
-            onChange={(e) => handleSelectChange(e.target.value)}
+            onChange={handleSelectChange}
           >
             <MenuItem value={""}>
               <em>None</em>
