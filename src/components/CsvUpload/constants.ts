@@ -8,7 +8,7 @@ import { CsvCleanupParamsMap } from "@/components/CsvUpload/types";
 export const csvCleanupParamsMap: CsvCleanupParamsMap = {
   standardCharteredCreditCard: {
     removeFirstNLines: 4,
-    removeLastNLines: 5,
+    removeLastNLines: 6,
     transformFunction: deriveStandardCharteredCreditCardFormat,
   },
   uobCreditCard: {
