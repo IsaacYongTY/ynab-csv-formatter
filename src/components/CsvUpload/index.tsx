@@ -56,6 +56,10 @@ export default function CsvUpload({
       setSelectedType("dbsAccount");
       return;
     }
+    if (filename.includes("e-Statement CSV")) {
+      setSelectedType("ocbcBusinessAccount");
+      return;
+    }
   };
   function handleUploadOnChange(e: ChangeEvent<HTMLInputElement>) {
     if (!e.target.files || !e.target?.files[0]) return;

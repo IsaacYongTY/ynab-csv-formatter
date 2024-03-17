@@ -1,5 +1,5 @@
 import {
-  deriveDbsAccountFormat,
+  deriveDbsAccountFormat, deriveOcbcBusinessAccountFormat,
   deriveStandardCharteredCreditCardFormat, deriveUobAccountFormat,
   deriveUobCreditCardFormat,
 } from "@/components/CsvUpload/utils";
@@ -26,6 +26,11 @@ export const csvCleanupParamsMap: CsvCleanupParamsMap = {
     removeLastNLines: 0,
     transformFunction: deriveDbsAccountFormat,
   },
+  ocbcBusinessAccount: {
+    removeFirstNLines: 0,
+    removeLastNLines: 0,
+    transformFunction: deriveOcbcBusinessAccountFormat
+  }
 };
 
 export const dropdownMenu = [
@@ -44,5 +49,9 @@ export const dropdownMenu = [
   {
     value: "dbsAccount",
     label: "DBS Account",
+  },
+  {
+    value: "ocbcBusinessAccount",
+    label: "OCBC Business Account",
   },
 ];

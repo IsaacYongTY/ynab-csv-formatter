@@ -11,19 +11,27 @@ export const deriveStandardCharteredCreditCardFormat = (
       ? row.__parsed_extra[0]
       : row["SGD Amount"];
 
-    if (amount.includes("DR")) {
-      outflow = amount.slice(4, amount.length - 3);
-    } else {
-      inflow = amount.slice(4, amount.length - 3);
+    let result = {
+        date: row["Date"],
+        payee: row["DESCRIPTION"],
+        memo: row["Foreign Currency Amount"],
+        outflow: outflow,
+        inflow: inflow,
     }
 
-    return {
-      date: row["Date"],
-      payee: row["DESCRIPTION"],
-      memo: row["Foreign Currency Amount"],
-      outflow: outflow,
-      inflow: inflow,
-    };
+    if(!amount) {
+      return result
+    }
+
+    if(amount.includes("DR")) {
+      result.outflow = amount.slice(4, amount.length - 3);
+
+      return result
+    }
+
+    result.inflow = amount.slice(4, amount.length - 3);
+
+    return result
   });
 };
 
@@ -77,4 +85,18 @@ export const renameFilenameExtensionToCsv = (filename: string): string => {
   }
 
   return `${filename.split(delimiter)[0]}.csv`;
+};
+
+export const deriveOcbcBusinessAccountFormat = (
+    parsedCsv: ParsedCsvRow[],
+): ProcessedCsvRow[] => {
+  return parsedCsv.map((row, index) => {
+    return {
+      date: row["Statement Value Date"],
+      payee: row["Ref For Account Owner"],
+      memo: row["Statement Details Info"],
+      outflow: row["Debit Amount"],
+      inflow: row["Credit Amount"],
+    };
+  });
 };
